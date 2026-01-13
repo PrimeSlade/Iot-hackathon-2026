@@ -12,17 +12,15 @@ export function Login() {
   const handleMicrosoftLogin = async () => {
     await authClient.signIn.social({
       provider: "microsoft",
-      callbackURL: "http://localhost:5173",
+      callbackURL: import.meta.env.VITE_FRONTEND_URL,
     });
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
+    <div className="flex w-screen min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold">
-            IoT Hackathon 2026
-          </CardTitle>
+          <CardTitle className="text-2xl font-bold">Skibidi67</CardTitle>
           <CardDescription>Sign in to your account to continue</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
