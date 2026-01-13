@@ -4,13 +4,7 @@ import { authClient } from "@/lib/auth-client";
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = authClient.useSession();
 
-  if (isPending) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
+  if (isPending) return null;
 
   if (!session) {
     return <Navigate to="/" replace />;
@@ -22,16 +16,10 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 export function PublicRoute({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = authClient.useSession();
 
-  if (isPending) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
+  if (isPending) return null;
 
   if (session) {
-    return <Navigate to="/app" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   return <>{children}</>;
