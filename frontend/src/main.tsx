@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.tsx";
 import { Login } from "./pages/Login.tsx";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute.tsx";
+import Home from "./pages/Home.tsx";
 
 const router = createBrowserRouter([
   {
@@ -16,12 +17,18 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/app",
+    path: "/home",
     element: (
       <ProtectedRoute>
         <App />
       </ProtectedRoute>
     ),
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+    ],
   },
 ]);
 

@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
 
-function App() {
+const Layout = () => {
   return (
     <div className="w-screen h-screen overflow-auto">
       <Outlet />
     </div>
   );
-}
+};
 
-export default App;
+export default Layout;
