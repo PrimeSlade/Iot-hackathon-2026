@@ -5,6 +5,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
+import boxRoutes from "./boxes/box.routes";
 
 dotenv.config();
 
@@ -20,12 +21,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: "http://localhost:5173", // Replace with your frontend's origin
-    methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Specify allowed HTTP methods
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   })
 );
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
+
+app.use("/boxes", boxRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Server is running!" });
