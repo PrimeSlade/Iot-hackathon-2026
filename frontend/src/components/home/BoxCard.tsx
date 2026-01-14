@@ -5,13 +5,30 @@ interface BoxCardProps {
   box: Box;
   onDispense: (id: number) => void;
   isDisabled: boolean;
+  onClick?: () => void;
+  isSelected?: boolean;
 }
 
-export const BoxCard = ({ box, onDispense, isDisabled }: BoxCardProps) => {
+export const BoxCard = ({
+  box,
+  onDispense,
+  isDisabled,
+  onClick,
+  isSelected,
+}: BoxCardProps) => {
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+    if (box.status === "available" && !isDisabled) {
+      onDispense(box.id);
+    }
+  };
+
   return (
     <button
-      onClick={() => onDispense(box.id)}
-      disabled={box.status === "empty" || isDisabled}
+      onClick={handleClick}
+      disabled={isDisabled}
       style={{
         backgroundColor: box.status === "available" ? "#f97316" : undefined,
       }}
@@ -23,6 +40,7 @@ export const BoxCard = ({ box, onDispense, isDisabled }: BoxCardProps) => {
             ? "hover:shadow-xl text-white shadow-lg cursor-pointer transform hover:-translate-y-1"
             : "bg-white border-2 border-gray-200 text-gray-400 cursor-not-allowed"
         }
+        ${isSelected ? "ring-4 ring-blue-500 ring-offset-2" : ""}
       `}
     >
       <Package

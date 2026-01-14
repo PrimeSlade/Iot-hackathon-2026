@@ -2,25 +2,66 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import { authClient } from "../lib/auth-client";
 import { useGetBoxes } from "@/hooks/useBoxes";
-import { updateBoxToEmpty } from "@/api/api";
+import { updateBoxToEmpty, updateBoxToAvailable } from "@/api/api";
 import { Spinner } from "@/components/ui/spinner";
 import { ItemContent, ItemTitle } from "@/components/ui/item";
 import { Header } from "@/components/home/Header";
 import { Statistics } from "@/components/home/Statistics";
 import { Legend } from "@/components/home/Legend";
 import { BoxCard } from "@/components/home/BoxCard";
+import { AdminControlsPanel } from "@/components/home/AdminBox";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const Home = () => {
   const queryClient = useQueryClient();
+  const [selectedBox, setSelectedBox] = useState<number | null>(null);
   const { data: boxes = [], isLoading: isLoadingBoxes } = useGetBoxes();
 
   const { mutate, isPending: isUpdatingToEmpty } = useMutation({
     mutationFn: (id: number) => updateBoxToEmpty(id),
-
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["boxes"] });
+      toast.success("Pad added successfully!");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to add pad");
     },
   });
+
+  // Single box
+  const { mutate: refillBox, isPending: isRefilling } = useMutation({
+    mutationFn: (id: number) => updateBoxToAvailable(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["boxes"] });
+      toast.success("Box refilled successfully!");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to refill box");
+    },
+  });
+
+  // All boxes
+  const { mutate: refillAllBoxes, isPending: isRefillingAll } = useMutation({
+    mutationFn: async () => {
+      await Promise.all(boxes.map((box) => updateBoxToAvailable(box.id)));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["boxes"] });
+      toast.success("All boxes refilled successfully!");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to refill all boxes");
+    },
+  });
+
+  const handleRefillBox = (id: number) => {
+    refillBox(id);
+  };
+
+  const handleRefillAll = () => {
+    refillAllBoxes();
+  };
 
   const handleLogout = async () => {
     try {
@@ -40,6 +81,7 @@ const Home = () => {
 
   const availableCount = boxes.filter((b) => b.status === "available").length;
   const emptyCount = boxes.filter((b) => b.status === "empty").length;
+  const selectedBoxData = boxes.find((b) => b.id === selectedBox) ?? null;
 
   return (
     <>
@@ -72,6 +114,7 @@ const Home = () => {
           <Statistics availableCount={availableCount} emptyCount={emptyCount} />
           <Legend />
 
+          {/* Boxes Grid */}
           <div className="bg-white rounded-3xl shadow-xl shadow-gray-100/50 p-4 sm:p-6 lg:p-10 mb-8 border border-gray-100">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
               {boxes.map((box) => (
@@ -80,10 +123,22 @@ const Home = () => {
                   box={box}
                   onDispense={mutate}
                   isDisabled={isUpdatingToEmpty}
+                  onClick={() => setSelectedBox(box.id)}
+                  isSelected={selectedBox === box.id}
                 />
               ))}
             </div>
           </div>
+
+          {/* Admin */}
+          <AdminControlsPanel
+            selectedBox={selectedBox}
+            box={selectedBoxData}
+            onRefillBox={handleRefillBox}
+            onRefillAll={handleRefillAll}
+            isRefilling={isRefilling}
+            isRefillingAll={isRefillingAll}
+          />
         </div>
       </div>
     </>
