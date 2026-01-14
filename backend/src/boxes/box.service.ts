@@ -1,3 +1,4 @@
+import { client } from "..";
 import { BoxStatus } from "../../generated/prisma/client";
 import {
   findBoxById,
@@ -13,6 +14,11 @@ export const updateBoxStatusToEmpty = async (id: number) => {
     throw new Error("Box not found");
   }
 
+  if (client.connected) {
+    // Dynamically sends to "cmd/servo1" or "cmd/servo2"
+    client.publish(`cmd/servo${id}`, "OPEN");
+  }
+
   return updateBoxStatus(id, BoxStatus.empty);
 };
 
@@ -21,6 +27,11 @@ export const updateBoxToAvailable = async (id: number) => {
 
   if (!box) {
     throw new Error("Box not found");
+  }
+
+  if (client.connected) {
+    // Dynamically sends to "cmd/servo1" or "cmd/servo2"
+    client.publish(`cmd/servo${id}`, "RESET");
   }
 
   return updateBoxStatus(id, BoxStatus.available);
