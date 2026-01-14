@@ -14,11 +14,11 @@ export const Statistics = ({ availableCount, emptyCount }: StatisticsProps) => {
           <p className="text-xs sm:text-sm lg:text-base text-gray-500 font-medium uppercase tracking-wider mb-1">
             Available
           </p>
-          <p className="text-3xl sm:text-4xl lg:text-5xl font-black text-orange-600">
+          <p className="text-3xl sm:text-4xl lg:text-5xl font-black text-[var(--primary-brand)]">
             {availableCount}
           </p>
         </div>
-        <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-orange-500 opacity-80" />
+        <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-[var(--primary-brand)] opacity-80" />
       </div>
 
       {/* Empty Card */}

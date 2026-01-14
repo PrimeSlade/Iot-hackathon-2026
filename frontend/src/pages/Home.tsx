@@ -79,7 +79,7 @@ const Home = () => {
   if (isLoadingBoxes || isPending) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Spinner className="text-orange-500 size-10" />
+        <Spinner className="size-10 text-(--primary-brand)" />
       </div>
     );
   }

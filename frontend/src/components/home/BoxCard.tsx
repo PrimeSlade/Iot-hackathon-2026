@@ -30,7 +30,7 @@ export const BoxCard = ({
       onClick={handleClick}
       disabled={isDisabled}
       style={{
-        backgroundColor: box.status === "available" ? "#f97316" : undefined,
+        backgroundColor: box.status === "available" ? "var(--primary-brand)" : "var(--empty-box)",
       }}
       className={`
         relative group overflow-hidden rounded-2xl p-4 sm:p-6 lg:p-8 
@@ -38,7 +38,7 @@ export const BoxCard = ({
         ${
           box.status === "available"
             ? "hover:shadow-xl text-white shadow-lg cursor-pointer transform hover:-translate-y-1"
-            : "bg-white border-2 border-gray-200 text-gray-400 cursor-not-allowed"
+            : "border-2 border-gray-200 text-gray-400 cursor-not-allowed"
         }
         ${isSelected ? "ring-4 ring-blue-500 ring-offset-2" : ""}
       `}

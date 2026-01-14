@@ -47,6 +47,11 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Custom colors */
+  --primary-brand: #2F669A;
+  --primary-brand-hover: #25527D;
+  --empty-box: #FFE8E8;
 }
 
 a {

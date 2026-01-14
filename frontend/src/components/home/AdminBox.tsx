@@ -21,7 +21,7 @@ export const AdminControlsPanel = ({
   return (
     <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-6 space-y-4">
       <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
-        <Package className="w-6 h-6 text-orange-600" />
+        <Package className="w-6 h-6 text-(--primary-brand)" />
         <h3 className="text-lg font-bold text-gray-900">Admin Controls</h3>
       </div>
 
@@ -33,7 +33,7 @@ export const AdminControlsPanel = ({
           <select
             value={selectedBoxId}
             onChange={(e) => setSelectedBoxId(Number(e.target.value))}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary-brand)] focus:border-transparent"
           >
             {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
               <option key={num} value={num}>
@@ -49,12 +49,12 @@ export const AdminControlsPanel = ({
             disabled={isDisabled}
             className={`
               flex-1 flex items-center justify-center gap-2
-              bg-orange-600 text-white px-6 py-3 rounded-xl 
+              bg-[var(--primary-brand)] text-white px-6 py-3 rounded-xl 
               font-semibold transition-all shadow-md
               ${
                 isDisabled
                   ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-orange-700 hover:shadow-lg active:scale-[0.98]"
+                  : "hover:bg-[var(--primary-brand-hover)] hover:shadow-lg active:scale-[0.98]"
               }
             `}
           >
