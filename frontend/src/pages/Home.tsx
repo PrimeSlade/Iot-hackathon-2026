@@ -2,66 +2,71 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import { authClient } from "../lib/auth-client";
 import { useGetBoxes } from "@/hooks/useBoxes";
-import { updateBoxToEmpty, updateBoxToAvailable } from "@/api/api";
+import {
+  updateBoxToEmpty,
+  updateBoxToAvailable,
+  updateAllBoxesToAvailable,
+} from "@/api/api";
 import { Spinner } from "@/components/ui/spinner";
-import { ItemContent, ItemTitle } from "@/components/ui/item";
 import { Header } from "@/components/home/Header";
 import { Statistics } from "@/components/home/Statistics";
 import { Legend } from "@/components/home/Legend";
 import { BoxCard } from "@/components/home/BoxCard";
 import { AdminControlsPanel } from "@/components/home/AdminBox";
-import { useState } from "react";
 import { toast } from "sonner";
 
 const Home = () => {
   const queryClient = useQueryClient();
-  const [selectedBox, setSelectedBox] = useState<number | null>(null);
   const { data: boxes = [], isLoading: isLoadingBoxes } = useGetBoxes();
+
+  const { data: session, isPending } = authClient.useSession();
+  const isAdmin = session?.user?.role === "admin";
 
   const { mutate, isPending: isUpdatingToEmpty } = useMutation({
     mutationFn: (id: number) => updateBoxToEmpty(id),
+    onMutate: () => {
+      toast.loading("Dispensing pad...", { id: "dispensing-pad" });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["boxes"] });
-      toast.success("Pad added successfully!");
+      toast.success("Pad added successfully!", { id: "dispensing-pad" });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to add pad");
+      toast.error("Failed to dispense pad", {
+        id: "dispensing-pad",
+      });
     },
   });
 
   // Single box
   const { mutate: refillBox, isPending: isRefilling } = useMutation({
     mutationFn: (id: number) => updateBoxToAvailable(id),
+    onMutate: () => {
+      toast.loading("Refilling pad...", { id: "refill-box" });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["boxes"] });
-      toast.success("Box refilled successfully!");
+      toast.success("Box refilled successfully!", { id: "refill-box" });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to refill box");
+      toast.error("Failed to refill pad", { id: "refill-box" });
     },
   });
 
   // All boxes
   const { mutate: refillAllBoxes, isPending: isRefillingAll } = useMutation({
-    mutationFn: async () => {
-      await Promise.all(boxes.map((box) => updateBoxToAvailable(box.id)));
+    mutationFn: () => updateAllBoxesToAvailable(),
+    onMutate: () => {
+      toast.loading("Refilling all boxes...", { id: "refill-all" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["boxes"] });
-      toast.success("All boxes refilled successfully!");
+      toast.success("All boxes refilled successfully!", { id: "refill-all" });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to refill all boxes");
+      toast.error("Failed to refill all boxes", { id: "refill-all" });
     },
   });
-
-  const handleRefillBox = (id: number) => {
-    refillBox(id);
-  };
-
-  const handleRefillAll = () => {
-    refillAllBoxes();
-  };
 
   const handleLogout = async () => {
     try {
@@ -71,7 +76,7 @@ const Home = () => {
     }
   };
 
-  if (isLoadingBoxes) {
+  if (isLoadingBoxes || isPending) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Spinner className="text-orange-500 size-10" />
@@ -81,67 +86,49 @@ const Home = () => {
 
   const availableCount = boxes.filter((b) => b.status === "available").length;
   const emptyCount = boxes.filter((b) => b.status === "empty").length;
-  const selectedBoxData = boxes.find((b) => b.id === selectedBox) ?? null;
 
   return (
-    <>
-      {isUpdatingToEmpty && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="flex justify-center items-center gap-5">
-            <Spinner className="text-orange-500 size-8" />
-            <ItemContent>
-              <ItemTitle className="line-clamp-1 text-orange-500">
-                Dispensing Pad...
-              </ItemTitle>
-            </ItemContent>
+    <div className="min-h-screen text-gray-900 font-sans p-4 sm:p-6 lg:p-10">
+      <div className="w-full max-w-[1600px] mx-auto">
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg active:scale-95"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
+        </div>
+
+        <Header />
+        <Statistics availableCount={availableCount} emptyCount={emptyCount} />
+        <Legend />
+
+        {/* Boxes Grid */}
+        <div className="bg-white rounded-3xl shadow-xl shadow-gray-100/50 p-4 sm:p-6 lg:p-10 mb-8 border border-gray-100">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+            {boxes.map((box) => (
+              <BoxCard
+                key={box.id}
+                box={box}
+                onDispense={mutate}
+                isDisabled={isUpdatingToEmpty}
+              />
+            ))}
           </div>
         </div>
-      )}
 
-      <div className="min-h-screen text-gray-900 font-sans p-4 sm:p-6 lg:p-10">
-        <div className="w-full max-w-[1600px] mx-auto">
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg active:scale-95"
-            >
-              <LogOut className="w-4 h-4" />
-              Logout
-            </button>
-          </div>
-
-          <Header />
-          <Statistics availableCount={availableCount} emptyCount={emptyCount} />
-          <Legend />
-
-          {/* Boxes Grid */}
-          <div className="bg-white rounded-3xl shadow-xl shadow-gray-100/50 p-4 sm:p-6 lg:p-10 mb-8 border border-gray-100">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
-              {boxes.map((box) => (
-                <BoxCard
-                  key={box.id}
-                  box={box}
-                  onDispense={mutate}
-                  isDisabled={isUpdatingToEmpty}
-                  onClick={() => setSelectedBox(box.id)}
-                  isSelected={selectedBox === box.id}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Admin */}
+        {/* Admin Controls - Only visible to admins */}
+        {isAdmin && (
           <AdminControlsPanel
-            selectedBox={selectedBox}
-            box={selectedBoxData}
-            onRefillBox={handleRefillBox}
-            onRefillAll={handleRefillAll}
+            onRefillBox={refillBox}
+            onRefillAll={refillAllBoxes}
             isRefilling={isRefilling}
             isRefillingAll={isRefillingAll}
           />
-        </div>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

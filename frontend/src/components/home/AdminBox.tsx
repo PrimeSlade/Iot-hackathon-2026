@@ -1,9 +1,7 @@
 import { Package, RefreshCw } from "lucide-react";
-import type { Box } from "@/api/api";
+import { useState } from "react";
 
 interface AdminControlsPanelProps {
-  selectedBox: number | null;
-  box: Box | null;
   onRefillBox: (id: number) => void;
   onRefillAll: () => void;
   isRefilling: boolean;
@@ -11,47 +9,43 @@ interface AdminControlsPanelProps {
 }
 
 export const AdminControlsPanel = ({
-  selectedBox,
-  box,
   onRefillBox,
   onRefillAll,
   isRefilling,
   isRefillingAll,
 }: AdminControlsPanelProps) => {
-  if (!box) return null;
-  if (!selectedBox) return null;
-  if (box.id !== selectedBox) return null;
+  const [selectedBoxId, setSelectedBoxId] = useState<number>(1);
 
   const isDisabled = isRefilling || isRefillingAll;
+
   return (
     <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-6 space-y-4">
       <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
         <Package className="w-6 h-6 text-orange-600" />
-        <h3 className="text-lg font-bold text-gray-900">Manage Box {box.id}</h3>
+        <h3 className="text-lg font-bold text-gray-900">Admin Controls</h3>
       </div>
 
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-600">
-            Current Status:
-          </span>
-          <span
-            className={`
-            px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide
-            ${
-              box.status === "available"
-                ? "bg-orange-100 text-orange-700"
-                : "bg-gray-100 text-gray-600"
-            }
-          `}
+        <div className="flex items-center gap-3">
+          <label className="text-sm font-medium text-gray-600">
+            Select Box:
+          </label>
+          <select
+            value={selectedBoxId}
+            onChange={(e) => setSelectedBoxId(Number(e.target.value))}
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           >
-            {box.status === "available" ? "Available" : "Empty"}
-          </span>
+            {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+              <option key={num} value={num}>
+                Box {num}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="flex gap-3 pt-2">
           <button
-            onClick={() => onRefillBox(selectedBox)}
+            onClick={() => onRefillBox(selectedBoxId)}
             disabled={isDisabled}
             className={`
               flex-1 flex items-center justify-center gap-2
@@ -67,7 +61,7 @@ export const AdminControlsPanel = ({
             <RefreshCw
               className={`w-4 h-4 ${isRefilling ? "animate-spin" : ""}`}
             />
-            {isRefilling ? "Processing..." : "Refill This Box"}
+            {isRefilling ? "Processing..." : "Refill Selected Box"}
           </button>
 
           <button

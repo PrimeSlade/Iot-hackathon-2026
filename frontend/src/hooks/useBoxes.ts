@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
-import { getAllBoxes } from '@/api/api';
+import { useQuery } from "@tanstack/react-query";
+import { getAllBoxes } from "@/api/api";
 
 export const useGetBoxes = () => {
   return useQuery({
-    queryKey: ['boxes'],
+    queryKey: ["boxes"],
     queryFn: getAllBoxes,
   });
 };

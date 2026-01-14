@@ -7,6 +7,7 @@ import App from "./App.tsx";
 import { Login } from "./pages/Login.tsx";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute.tsx";
 import Home from "./pages/Home.tsx";
+import { Toaster } from "sonner";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      <Toaster richColors />
     </QueryClientProvider>
   </StrictMode>
 );
