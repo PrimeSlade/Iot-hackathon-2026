@@ -35,7 +35,7 @@ const Home = () => {
       toast.dismiss("dispensing-pad");
       setShowSuccessDialog(true);
     },
-    onError: (error: Error) => {
+    onError: () => {
       toast.error("Failed to dispense pad", {
         id: "dispensing-pad",
       });
@@ -52,7 +52,7 @@ const Home = () => {
       queryClient.invalidateQueries({ queryKey: ["boxes"] });
       toast.success("Box refilled successfully!", { id: "refill-box" });
     },
-    onError: (error: Error) => {
+    onError: () => {
       toast.error("Failed to refill pad", { id: "refill-box" });
     },
   });
@@ -67,7 +67,7 @@ const Home = () => {
       queryClient.invalidateQueries({ queryKey: ["boxes"] });
       toast.success("All boxes refilled successfully!", { id: "refill-all" });
     },
-    onError: (error: Error) => {
+    onError: () => {
       toast.error("Failed to refill all boxes", { id: "refill-all" });
     },
   });

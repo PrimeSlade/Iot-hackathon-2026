@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CheckCircle2, Package } from "lucide-react";
+import { Package } from "lucide-react";
 
 interface DispenseSuccessDialogProps {
   open: boolean;
