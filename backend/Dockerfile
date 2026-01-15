@@ -44,5 +44,4 @@ COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
-# Note: No need to 'generate' again here because we copied the folder
-CMD ["sh", "-c", "pnpm exec prisma migrate deploy && node dist/index.js"]
+CMD ["node", "dist/index.js"]
