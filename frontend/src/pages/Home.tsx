@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LogOut } from "lucide-react";
 import { authClient } from "../lib/auth-client";
 import { useGetBoxes } from "@/hooks/useBoxes";
 import {
@@ -8,28 +7,33 @@ import {
   updateAllBoxesToAvailable,
 } from "@/api/api";
 import { Spinner } from "@/components/ui/spinner";
-import { Header } from "@/components/home/Header";
 import { Statistics } from "@/components/home/Statistics";
-import { Legend } from "@/components/home/Legend";
 import { BoxCard } from "@/components/home/BoxCard";
 import { AdminControlsPanel } from "@/components/home/AdminBox";
+import { ContactPanel } from "@/components/home/ContactPanel";
+import { DispenseSuccessDialog } from "@/components/home/DispenseSuccessDialog";
 import { toast } from "sonner";
+import { useState } from "react";
 
 const Home = () => {
   const queryClient = useQueryClient();
   const { data: boxes = [], isLoading: isLoadingBoxes } = useGetBoxes();
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [dispensedBoxNumber, setDispensedBoxNumber] = useState<number>(0);
 
   const { data: session, isPending } = authClient.useSession();
   const isAdmin = session?.user?.role === "admin";
 
   const { mutate, isPending: isUpdatingToEmpty } = useMutation({
     mutationFn: (id: number) => updateBoxToEmpty(id),
-    onMutate: () => {
+    onMutate: (id) => {
+      setDispensedBoxNumber(id);
       toast.loading("Dispensing pad...", { id: "dispensing-pad" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["boxes"] });
-      toast.success("Pad added successfully!", { id: "dispensing-pad" });
+      toast.dismiss("dispensing-pad");
+      setShowSuccessDialog(true);
     },
     onError: (error: Error) => {
       toast.error("Failed to dispense pad", {
@@ -68,14 +72,6 @@ const Home = () => {
     },
   });
 
-  const handleLogout = async () => {
-    try {
-      await authClient.signOut();
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
   if (isLoadingBoxes || isPending) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -88,25 +84,13 @@ const Home = () => {
   const emptyCount = boxes.filter((b) => b.status === "empty").length;
 
   return (
-    <div className="min-h-screen text-gray-900 font-sans p-4 sm:p-6 lg:p-10">
-      <div className="w-full max-w-[1600px] mx-auto">
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg active:scale-95"
-          >
-            <LogOut className="w-4 h-4" />
-            Logout
-          </button>
-        </div>
-
-        <Header />
+    <div className="text-gray-900 font-sans py-6 sm:py-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10">
         <Statistics availableCount={availableCount} emptyCount={emptyCount} />
-        <Legend />
 
         {/* Boxes Grid */}
-        <div className="bg-white rounded-3xl shadow-xl shadow-gray-100/50 p-4 sm:p-6 lg:p-10 mb-8 border border-gray-100">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8 mb-6 border border-gray-100">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
             {boxes.map((box) => (
               <BoxCard
                 key={box.id}
@@ -119,14 +103,23 @@ const Home = () => {
         </div>
 
         {/* Admin Controls - Only visible to admins */}
-        {isAdmin && (
+        {isAdmin ? (
           <AdminControlsPanel
             onRefillBox={refillBox}
             onRefillAll={refillAllBoxes}
             isRefilling={isRefilling}
             isRefillingAll={isRefillingAll}
           />
+        ) : (
+          <ContactPanel />
         )}
+
+        {/* Success Dialog */}
+        <DispenseSuccessDialog
+          open={showSuccessDialog}
+          onOpenChange={setShowSuccessDialog}
+          boxNumber={dispensedBoxNumber}
+        />
       </div>
     </div>
   );

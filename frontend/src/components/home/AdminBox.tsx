@@ -49,12 +49,12 @@ export const AdminControlsPanel = ({
             disabled={isDisabled}
             className={`
               flex-1 flex items-center justify-center gap-2
-              bg-[var(--primary-brand)] text-white px-6 py-3 rounded-xl 
+              bg-(--primary-brand) text-white px-6 py-3 rounded-xl 
               font-semibold transition-all shadow-md
               ${
                 isDisabled
                   ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-[var(--primary-brand-hover)] hover:shadow-lg active:scale-[0.98]"
+                  : "hover:bg-(--primary-brand-hover) hover:shadow-lg active:scale-[0.98]"
               }
             `}
           >
@@ -69,12 +69,12 @@ export const AdminControlsPanel = ({
             disabled={isDisabled}
             className={`
               flex-1 flex items-center justify-center gap-2
-              bg-gray-800 text-white px-6 py-3 rounded-xl 
+              bg-(--primary-brand) text-white px-6 py-3 rounded-xl 
               font-semibold transition-all shadow-md
               ${
                 isDisabled
                   ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-900 hover:shadow-lg active:scale-[0.98]"
+                  : "hover:bg-(--primary-brand-hover) hover:shadow-lg active:scale-[0.98]"
               }
             `}
           >

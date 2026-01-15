@@ -1,8 +1,10 @@
 import { Outlet } from "react-router-dom";
+import { Navbar } from "@/components/Navbar";
 
 function App() {
   return (
     <div className="w-screen h-screen overflow-auto bg-gray-50">
+      <Navbar />
       <Outlet />
     </div>
   );
