@@ -1,5 +1,5 @@
 # Backend Dockerfile
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
@@ -25,7 +25,7 @@ RUN pnpm exec prisma generate
 RUN pnpm run build
 
 # Production stage
-FROM node:20-alpine AS runner
+FROM node:24-alpine AS runner
 WORKDIR /app
 
 # Install pnpm
