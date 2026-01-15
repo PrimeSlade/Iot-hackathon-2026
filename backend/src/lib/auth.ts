@@ -13,7 +13,7 @@ export const auth = betterAuth({
   advanced: {
     disableOriginCheck: true, //Only use this during development!
   },
-  trustedOrigins: [`${process.env.BETTER_AUTH_URL}`],
+  trustedOrigins: [`${process.env.FRONTEND_URL}`],
   baseURL: process.env.BETTER_AUTH_URL,
   socialProviders: {
     microsoft: {
