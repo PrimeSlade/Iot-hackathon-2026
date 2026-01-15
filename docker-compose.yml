@@ -19,8 +19,6 @@ services:
       MICROSOFT_TENANT_ID: ${MICROSOFT_TENANT_ID}
       MQTT_BROKER_URL: ${MQTT_BROKER_URL}
       CORS_ORIGIN: ${CORS_ORIGIN}
-    ports:
-      - "3000:3000"
 
   # Frontend
   frontend:
@@ -34,8 +32,6 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
-    ports:
-      - "3001:3000"
 
 networks:
   default:
