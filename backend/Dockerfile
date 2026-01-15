@@ -1,7 +1,7 @@
 # Backend Dockerfile
 FROM node:24-alpine AS base
 
-RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+RUN npm install -g pnpm@10.17.1
 WORKDIR /app
 
 # --- Dependencies Stage ---
@@ -25,7 +25,7 @@ RUN pnpm run build
 FROM node:24-alpine AS runner
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+RUN npm install -g pnpm@10.17.1
 ENV NODE_ENV=production
 
 # Copy package files

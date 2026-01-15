@@ -2,7 +2,7 @@
 FROM node:20-alpine AS base
 
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+RUN npm install -g pnpm@10.17.1
 
 WORKDIR /app
 
