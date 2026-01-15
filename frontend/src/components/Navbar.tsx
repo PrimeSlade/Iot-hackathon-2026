@@ -1,16 +1,13 @@
 import { Package, LogOut } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 
 export const Navbar = () => {
-  const navigate = useNavigate();
   const { data: session } = authClient.useSession();
 
   const handleLogout = async () => {
     try {
       await authClient.signOut();
-      navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
     }
