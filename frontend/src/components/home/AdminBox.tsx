@@ -35,7 +35,7 @@ export const AdminControlsPanel = ({
             onChange={(e) => setSelectedBoxId(Number(e.target.value))}
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary-brand)] focus:border-transparent"
           >
-            {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+            {Array.from({ length: 4 }, (_, i) => i + 1).map((num) => (
               <option key={num} value={num}>
                 Box {num}
               </option>

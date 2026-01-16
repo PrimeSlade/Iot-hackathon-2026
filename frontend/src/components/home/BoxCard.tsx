@@ -30,7 +30,10 @@ export const BoxCard = ({
       onClick={handleClick}
       disabled={isDisabled}
       style={{
-        backgroundColor: box.status === "available" ? "var(--primary-brand)" : "var(--empty-box)",
+        backgroundColor:
+          box.status === "available"
+            ? "var(--primary-brand)"
+            : "var(--empty-box)",
       }}
       className={`
         relative group overflow-hidden rounded-2xl p-4 sm:p-6 lg:p-8 
