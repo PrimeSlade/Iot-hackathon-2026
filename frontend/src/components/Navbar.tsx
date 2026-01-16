@@ -27,7 +27,7 @@ export const Navbar = () => {
             </div>
             <div>
               <h1 className="text-md sm:text-lg font-bold text-gray-900 tracking-tight">
-                Sanitary Pad Dispenser
+                Sanitary Pads Dispenser
               </h1>
               <p className="text-xs sm:text-sm text-gray-500 font-medium">
                 Welcome, {session.user?.name || session.user?.email}

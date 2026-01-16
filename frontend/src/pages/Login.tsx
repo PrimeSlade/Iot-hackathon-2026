@@ -18,7 +18,7 @@ export function Login() {
             <Package className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-3 tracking-tight">
-            Sanitary Pad Dispenser
+            Sanitary Pads Dispenser
           </h1>
           <p className="text-sm sm:text-base lg:text-lg text-gray-500 font-medium">
             Sign in to your account to continue
@@ -67,7 +67,7 @@ export function Login() {
         {/* Footer */}
         <div className="mt-8 text-center">
           <p className="text-xs text-gray-400">
-            © 2026 Sanitary Pad Dispenser. All rights reserved.
+            © 2026 Sanitary Pads Dispenser. All rights reserved.
           </p>
         </div>
       </div>
